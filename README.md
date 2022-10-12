@@ -32,12 +32,12 @@ See **examples/SDConfigFileExample** for a simple example Sketch and its .cfg fi
 
 The basic flow of reading a configuration file is:
 
-    #include <SD.h>
+    #include <SD_MMC.h>
     #include <SDConfigFile.h>
 
     SDConfigFile cfg;
     
-    SD.begin(...);
+    SD_MMC.begin(...);
     cfg.begin(...);
     while (cfg.readNextSetting()) {
       if (cfg.nameIs("mySetting1")) {

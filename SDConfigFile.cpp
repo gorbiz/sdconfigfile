@@ -6,7 +6,7 @@
  * Licensed under LGPL version 2.1
  * a version of which should have been supplied with this file.
  */
- 
+
 #include <SDConfigFile.h>
 
 /*
@@ -15,7 +15,7 @@
  *
  * configFileName = the name of the configuration file on the SD card.
  *
- * NOTE: SD.begin() must be called before calling our begin().
+ * NOTE: SD_MMC.begin() must be called before calling our begin().
  */
 boolean SDConfigFile::begin(const char *configFileName, uint8_t maxLineLength) {
   _lineLength = 0;
@@ -40,8 +40,8 @@ boolean SDConfigFile::begin(const char *configFileName, uint8_t maxLineLength) {
    * To avoid stale references to configFileName
    * we don't save it. To minimize memory use, we don't copy it.
    */
-   
-  _file = SD.open(configFileName, FILE_READ);
+
+  _file = SD_MMC.open(configFileName, FILE_READ);
   if (!_file) {
 #ifdef SDCONFIGFILE_DEBUG
     Serial.print("Could not open SD file: ");
@@ -50,10 +50,10 @@ boolean SDConfigFile::begin(const char *configFileName, uint8_t maxLineLength) {
     _atEnd = true;
     return false;
   }
-  
+
   // Initialize our reader
   _atEnd = false;
-  
+
   return true;
 }
 
@@ -79,14 +79,14 @@ void SDConfigFile::end() {
  */
 boolean SDConfigFile::readNextSetting() {
   int bint;
-  
+
   if (_atEnd) {
     return false;  // already at end of file (or error).
   }
-  
+
   _lineLength = 0;
   _valueIdx = -1;
-  
+
   /*
    * Assume beginning of line.
    * Skip blank and comment lines
@@ -99,7 +99,7 @@ boolean SDConfigFile::readNextSetting() {
       _atEnd = true;
       return false;
     }
-    
+
     if ((char) bint == '#') {
       // Comment line.  Read until end of line or end of file.
       while (true) {
@@ -114,16 +114,16 @@ boolean SDConfigFile::readNextSetting() {
       }
       continue; // look for the next line.
     }
-    
+
     // Ignore line ends and blank text
     if ((char) bint == '\r' || (char) bint == '\n'
         || (char) bint == ' ' || (char) bint == '\t') {
       continue;
     }
-        
+
     break; // bint contains the first character of the name
   }
-  
+
   // Copy from this first character to the end of the line.
 
   while (bint >= 0 && (char) bint != '\r' && (char) bint != '\n') {
@@ -136,26 +136,26 @@ boolean SDConfigFile::readNextSetting() {
       _atEnd = true;
       return false;
     }
-    
+
     if ((char) bint == '=') {
       // End of Name; the next character starts the value.
       _line[_lineLength++] = '\0';
       _valueIdx = _lineLength;
-      
+
     } else {
       _line[_lineLength++] = (char) bint;
     }
-    
+
     bint = _file.read();
   }
-  
+
   if (bint < 0) {
     _atEnd = true;
     // Don't exit. This is a normal situation:
     // the last line doesn't end in newline.
   }
   _line[_lineLength] = '\0';
-  
+
   /*
    * Sanity checks of the line:
    *   No =
@@ -178,7 +178,7 @@ boolean SDConfigFile::readNextSetting() {
     _atEnd = true;
     return false;
   }
-  
+
   // Name starts at _line[0]; Value starts at _line[_valueIdx].
   return true;
 
@@ -222,7 +222,7 @@ const char *SDConfigFile::getValue() {
 /*
  * Returns a persistent, dynamically-allocated copy of the value part
  * of the most-recently-read setting, or null if a failure occurred.
- * 
+ *
  * Unlike getValue(), the return value of this function
  * persists after readNextSetting() is called or end() is called.
  */
@@ -239,7 +239,7 @@ char *SDConfigFile::copyValue() {
   if (result == 0) {
     return 0; // out of memory
   }
-  
+
   strcpy(result, &_line[_valueIdx]);
 
   return result;

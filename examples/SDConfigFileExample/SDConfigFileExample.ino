@@ -1,4 +1,4 @@
-#include <SD.h>
+#include <SD_MMC.h>
 #include <SDConfigFile.h>
 
 /*
@@ -10,7 +10,7 @@
  * This example app is placed in the public domain by its author,
  * Bradford Needham (@bneedhamia, https://www.needhamia.com )
  */
- 
+
 /*
  * Hardware: An Arduino Uno
  * plus an SD card shield, for example the
@@ -69,12 +69,12 @@ void setup() {
   hello = 0;
   doDelay = false;
   waitMs = 0;
-  
-  
-  // Setup the SD card 
-  Serial.println("Calling SD.begin()...");
-  if (!SD.begin(pinSelectSD)) {
-    Serial.println("SD.begin() failed. Check: ");
+
+
+  // Setup the SD card
+  Serial.println("Calling SD_MMC.begin()...");
+  if (!SD_MMC.begin(pinSelectSD)) {
+    Serial.println("SD_MMC.begin() failed. Check: ");
     Serial.println("  card insertion,");
     Serial.println("  SD shield I/O pins and chip select,");
     Serial.println("  card formatting.");
@@ -91,7 +91,7 @@ void loop() {
   /*
    * If we didn't read the configuration, do nothing.
    */
-   
+
   if (!didReadConfig) {
     return;
   }
@@ -108,7 +108,7 @@ void loop() {
     }
 
   }
-  
+
 }
 
 /*
@@ -123,25 +123,25 @@ boolean readConfiguration() {
    * You probably won't need to change this number.
    */
   const uint8_t CONFIG_LINE_LENGTH = 127;
-  
+
   // The open configuration file.
   SDConfigFile cfg;
-  
+
   // Open the configuration file.
   if (!cfg.begin(CONFIG_FILE, CONFIG_LINE_LENGTH)) {
     Serial.print("Failed to open configuration file: ");
     Serial.println(CONFIG_FILE);
     return false;
   }
-  
+
   // Read each setting from the file.
   while (cfg.readNextSetting()) {
-    
+
     // Put a nameIs() block here for each setting you have.
-    
+
     // doDelay
     if (cfg.nameIs("doDelay")) {
-      
+
       doDelay = cfg.getBooleanValue();
       Serial.print("Read doDelay: ");
       if (doDelay) {
@@ -149,17 +149,17 @@ boolean readConfiguration() {
       } else {
         Serial.println("false");
       }
-    
+
     // waitMs integer
     } else if (cfg.nameIs("waitMs")) {
-      
+
       waitMs = cfg.getIntValue();
       Serial.print("Read waitMs: ");
       Serial.println(waitMs);
 
     // hello string (char *)
     } else if (cfg.nameIs("hello")) {
-      
+
       // Dynamically allocate a copy of the string.
       hello = cfg.copyValue();
       Serial.print("Read hello: ");
@@ -171,10 +171,10 @@ boolean readConfiguration() {
       Serial.println(cfg.getName());
     }
   }
-  
+
   // clean up
   cfg.end();
-  
+
   return true;
 }
 

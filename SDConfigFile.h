@@ -14,7 +14,7 @@
  */
 
 #include <Arduino.h>
-#include <SD.h>
+#include <SD_MMC.h>
 
 class SDConfigFile {
   private:
@@ -27,7 +27,7 @@ class SDConfigFile {
     uint8_t _valueIdx;     // position in _line[] where the value starts
                            //  (or -1 if none)
                            // (the name part is at &_line[0])
-  
+
   public:
     boolean begin(const char *configFileName, uint8_t maxLineLength);
     void end();
