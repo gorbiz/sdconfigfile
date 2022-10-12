@@ -17,13 +17,13 @@ To install SDConfigFile on Windows:
 
 1. Run git bash (or whatever git client you like)
 1. cd Documents/Arduino/libraries
-1. git clone https://github.com/bneedhamia/sdconfigfile.git SDConfigFile
+1. git clone https://github.com/gorbiz/sdconfigfile.git SDConfigFile
 1. restart your Arduino IDE
 
 To install SDConfigFile on Linux:
 
 1. cd sketchbook/libraries
-1. git clone https://github.com/bneedhamia/sdconfigfile.git SDConfigFile
+1. git clone https://github.com/gorbiz/sdconfigfile.git SDConfigFile
 1. restart your Arduino IDE
 
 ## To use
